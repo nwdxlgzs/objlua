@@ -186,6 +186,9 @@ pram:<type>
 # 演示与字节码解析
 [点我跳转](https://github.com/nwdxlgzs/objlua-bytecode-parse)
 
+# 测试脚本
+测试脚本位于`tests/`目录下，在这里你可以看到相关语法、库的测试。[点我跳转](./tests/)
+
 # 协议
 - Lua:[MIT](./LUA.LICENSE)
 - ObjLua:[MIT](./OBJLUA.LICENSE)
