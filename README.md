@@ -184,5 +184,5 @@ pram:<type>
 可通过`int lua_compare(lua_State *L, int index1, int index2, int op)`进行`typeof`/`instanceof`比较运算
 
 # 协议
-- Lua:MIT
-- ObjLua:MIT
+- Lua:[MIT](./LUA.LICENSE)
+- ObjLua:[MIT](./OBJLUA.LICENSE)
