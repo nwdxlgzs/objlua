@@ -1,0 +1,10 @@
+# 忽略 IDE 配置目录
+.idea/
+.vscode/
+
+# 忽略构建输出目录
+build/
+
+# 系统文件
+.DS_Store
+Thumbs.db
