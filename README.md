@@ -183,6 +183,9 @@ pram:<type>
 ```
 可通过`int lua_compare(lua_State *L, int index1, int index2, int op)`进行`typeof`/`instanceof`比较运算
 
+# 演示与字节码解析
+[点我跳转](https://github.com/nwdxlgzs/objlua-bytecode-parse)
+
 # 协议
 - Lua:[MIT](./LUA.LICENSE)
 - ObjLua:[MIT](./OBJLUA.LICENSE)
