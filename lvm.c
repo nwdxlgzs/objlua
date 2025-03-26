@@ -2028,7 +2028,7 @@ returning: /* trap already set */
                 //拷贝走返回值
                 if (ra != L->top.p - 1)
                     setobjs2s(L, ra, L->top.p - 1);
-                checkGC(L, ra + 1);luaC_fullgc(L, 0);
+                checkGC(L, ra + 1);
                 vmbreak;
             }
         vmcase(OP_DEFFIELD) {

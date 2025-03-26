@@ -102,33 +102,33 @@ int RunAtOP_DEFCLASS(lua_State *L) {
     lua_pushvalue(L, -1); //R4
     lua_setiuservalue(L, 2, OBJLUA_UV_gc + 1); //R3
     if (lua_isnil(L, lua_upvalueindex(2))) {
-    //R3
-    //无父类
-    clazz->super = NULL; //R3
+        //R3
+        //无父类
+        clazz->super = NULL; //R3
     } else {
-    //有父类
-    lua_pushvalue(L, lua_upvalueindex(2)); //R4
-    lua_rawget(L, -4); //R4
-    if (!lua_toboolean(L, -1)) luaG_runerror(L, "bad super class: not registered"); //R3
-    lua_pop(L, 1); //R3
-    LuaObjUData *superClass = lua_touserdata(L, lua_upvalueindex(2)); //R3
-    if (!superClass->is_class) luaG_runerror(L, "bad super class: not a class"); //R3
-    clazz->super = superClass; //R3
-    //把父类绑定到现在定义的类的GC表里
-    lua_pushvalue(L, lua_upvalueindex(2)); //R4
-    lua_rawseti(L, -2, ++GCIDX); //R3
+        //有父类
+        lua_pushvalue(L, lua_upvalueindex(2)); //R4
+        lua_rawget(L, -4); //R4
+        if (!lua_toboolean(L, -1)) luaG_runerror(L, "bad super class: not registered"); //R3
+        lua_pop(L, 1); //R3
+        LuaObjUData *superClass = lua_touserdata(L, lua_upvalueindex(2)); //R3
+        if (!superClass->is_class) luaG_runerror(L, "bad super class: not a class"); //R3
+        clazz->super = superClass; //R3
+        //把父类绑定到现在定义的类的GC表里
+        lua_pushvalue(L, lua_upvalueindex(2)); //R4
+        lua_rawseti(L, -2, ++GCIDX); //R3
     }
     if (lua_type(L, lua_upvalueindex(1)) == LUA_TSTRING) {
-    //R3
-    //有名字
-    lua_pushvalue(L, lua_upvalueindex(1)); //R4
-    TString *ts = tsvalue(index2value(L, -1)); //R4
-    clazz->name = ts; //R4
-    //把父类绑定到现在定义的类的GC表里
-    lua_rawseti(L, -2, ++GCIDX); //R3
+        //R3
+        //有名字
+        lua_pushvalue(L, lua_upvalueindex(1)); //R4
+        TString *ts = tsvalue(index2value(L, -1)); //R4
+        clazz->name = ts; //R4
+        //把父类绑定到现在定义的类的GC表里
+        lua_rawseti(L, -2, ++GCIDX); //R3
     } else {
-    //无名字
-    clazz->name = NULL;
+        //无名字
+        clazz->name = NULL;
     }
     clazz->classholder = clazz; //类就是自己，这时候就不需要挂载GC了
     clazz->is_class = 1;
@@ -831,11 +831,12 @@ static LuaObjUData *makeObject(lua_State *L, LuaObjUData *clazz, TValue *ObjLuaW
             obj_field->flags = field->flags;
             obj_field->initconst = field->initconst;
             obj_field->udata = uvalue(index2value(L, -1)); //Y+1
-            if (obj_field->flags&LUAOBJ_ACCESS_NOWRAP) {            ///旧版方案：动态字段初始值直接从原来的拷贝一份
-                setnowrap:;
+            if (obj_field->flags & LUAOBJ_ACCESS_NOWRAP) {
+                ///旧版方案：动态字段初始值直接从原来的拷贝一份
+            setnowrap:;
                 lua_pushnil(L); //Y+2
                 setobjt2t(L, index2value(L, -1), &field->udata->uv[OBJLUA_UV_fields].uv); //Y+2
-            }else {
+            } else {
                 ///新版将会自动调用一次字段的函数
                 if (ttype(&field->udata->uv[OBJLUA_UV_fields].uv) == LUA_TFUNCTION) {
                     //Y+1
@@ -843,10 +844,10 @@ static LuaObjUData *makeObject(lua_State *L, LuaObjUData *clazz, TValue *ObjLuaW
 
                     // * upval[2]:LuaObjMethod/LClosure
                     lua_pushvalue(L, retTop); //Y+2 临时未完成初始化的对象
-                    lua_pushnil(L);// Y+3
+                    lua_pushnil(L); // Y+3
                     setobjt2t(L, index2value(L, -1), &field->udata->uv[OBJLUA_UV_fields].uv); //Y+3
-                    lua_pushcclosure(L, Objudata_MethodWrapCall, 2);//Y+2
-                    lua_call(L, 0, 1);//Y+1
+                    lua_pushcclosure(L, Objudata_MethodWrapCall, 2); //Y+2
+                    lua_call(L, 0, 1); //Y+1
                 } else goto setnowrap;
             }
             lua_setiuservalue(L, -2, OBJLUA_UV_fields + 1); //Y+1
@@ -893,7 +894,8 @@ static int ObjudataMT__call(lua_State *L) {
     if (!clazz->is_class) luaG_runerror(L, "only class can call constructors");
     int nargs = lua_gettop(L) - 1;
     ObjWeakTableGet(L);
-    if (clazz->size_constructors == 0) {//默认无参构造其实可以改成默认无构造函数自匹配，更人性化
+    if (clazz->size_constructors == 0) {
+        //默认无参构造其实可以改成默认无构造函数自匹配，更人性化
         LuaObjUData *obj = makeObject(L, clazz, ObjLuaWeakTable, 2, 1 + nargs);
         return 1;
     } else {
