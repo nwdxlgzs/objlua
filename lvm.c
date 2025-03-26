@@ -2028,6 +2028,7 @@ returning: /* trap already set */
                 //拷贝走返回值
                 if (ra != L->top.p - 1)
                     setobjs2s(L, ra, L->top.p - 1);
+                checkGC(L, ra + 1);luaC_fullgc(L, 0);
                 vmbreak;
             }
         vmcase(OP_DEFFIELD) {
@@ -2053,6 +2054,8 @@ returning: /* trap already set */
                 savepc(L);
                 luaD_precall(L, ra + 1, 0);
                 updatebase(ci);
+                luaC_barrier(L, obj2gco(s2v(ra)), s2v(ra));
+                checkGC(L, ra + 2);
                 vmbreak;
             }
         vmcase(OP_METHODINIT) {
@@ -2096,6 +2099,7 @@ returning: /* trap already set */
                 savepc(L);
                 luaD_precall(L, ra + 1, 0);
                 updatebase(ci);
+                checkGC(L, ra + 2);
                 vmbreak;
             }
         vmcase(OP_DEFMETHOD) {
@@ -2125,6 +2129,8 @@ returning: /* trap already set */
                 //拷贝走返回值
                 if (ra + 1 != L->top.p - 1)
                     setobjs2s(L, ra+1, L->top.p - 1);
+                luaC_barrier(L, obj2gco(s2v(ra+1)), s2v(ra+1));
+                checkGC(L, ra + 2);
                 vmbreak;
             }
         vmcase(OP_CKMCONST) {

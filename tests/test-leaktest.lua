@@ -25,7 +25,7 @@ function testMem(print)
     cleanup_mem = collectgarbage("count")
     print("notsetup_mem:", notsetup_mem, "setup_mem:", setup_mem, "cleanup_mem:", cleanup_mem)
     print("grow memory size:", setup_mem - notsetup_mem)
-    print("leak:", cleanup_mem - notsetup_mem)
+    print("leak:", cleanup_mem - notsetup_mem)--leak这里算的也不一样，只要每次notsetup_mem一样就可以，这里的leak算出来的并不准
 end
 testMem(function()end)--第一次有初始化的事，肯定不是0，后续重复执行如果泄露肯定不是0这才需要看
 for i = 1, 4 do

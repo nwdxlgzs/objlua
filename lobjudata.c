@@ -93,7 +93,7 @@ int RunAtOP_DEFCLASS(lua_State *L) {
     //为了防止左脚踩右脚，出现本质clazz->super = clazz，要后注册clazz
     LuaObjUData *clazz = lua_newuserdatauv(L, sizeof(LuaObjUData), LuaObjUDataUpValueMinSize); //R2
     clazz->udata = uvalue(index2value(L, -1)); //R2
-    //预先准备元表
+    // 预先准备元表
     lua_newtable(L); //R3
     ObjudataMT__setup(L, 3); //R3
     lua_setmetatable(L, -2); //R2
@@ -102,33 +102,33 @@ int RunAtOP_DEFCLASS(lua_State *L) {
     lua_pushvalue(L, -1); //R4
     lua_setiuservalue(L, 2, OBJLUA_UV_gc + 1); //R3
     if (lua_isnil(L, lua_upvalueindex(2))) {
-        //R3
-        //无父类
-        clazz->super = NULL; //R3
+    //R3
+    //无父类
+    clazz->super = NULL; //R3
     } else {
-        //有父类
-        lua_pushvalue(L, lua_upvalueindex(2)); //R4
-        lua_rawget(L, -4); //R4
-        if (!lua_toboolean(L, -1)) luaG_runerror(L, "bad super class: not registered"); //R3
-        lua_pop(L, 1); //R3
-        LuaObjUData *superClass = lua_touserdata(L, lua_upvalueindex(2)); //R3
-        if (!superClass->is_class) luaG_runerror(L, "bad super class: not a class"); //R3
-        clazz->super = superClass; //R3
-        //把父类绑定到现在定义的类的GC表里
-        lua_pushvalue(L, lua_upvalueindex(2)); //R4
-        lua_rawseti(L, -2, ++GCIDX); //R3
+    //有父类
+    lua_pushvalue(L, lua_upvalueindex(2)); //R4
+    lua_rawget(L, -4); //R4
+    if (!lua_toboolean(L, -1)) luaG_runerror(L, "bad super class: not registered"); //R3
+    lua_pop(L, 1); //R3
+    LuaObjUData *superClass = lua_touserdata(L, lua_upvalueindex(2)); //R3
+    if (!superClass->is_class) luaG_runerror(L, "bad super class: not a class"); //R3
+    clazz->super = superClass; //R3
+    //把父类绑定到现在定义的类的GC表里
+    lua_pushvalue(L, lua_upvalueindex(2)); //R4
+    lua_rawseti(L, -2, ++GCIDX); //R3
     }
     if (lua_type(L, lua_upvalueindex(1)) == LUA_TSTRING) {
-        //R3
-        //有名字
-        lua_pushvalue(L, lua_upvalueindex(1)); //R4
-        TString *ts = tsvalue(index2value(L, -1)); //R4
-        clazz->name = ts; //R4
-        //把父类绑定到现在定义的类的GC表里
-        lua_rawseti(L, -2, ++GCIDX); //R3
+    //R3
+    //有名字
+    lua_pushvalue(L, lua_upvalueindex(1)); //R4
+    TString *ts = tsvalue(index2value(L, -1)); //R4
+    clazz->name = ts; //R4
+    //把父类绑定到现在定义的类的GC表里
+    lua_rawseti(L, -2, ++GCIDX); //R3
     } else {
-        //无名字
-        clazz->name = NULL;
+    //无名字
+    clazz->name = NULL;
     }
     clazz->classholder = clazz; //类就是自己，这时候就不需要挂载GC了
     clazz->is_class = 1;
@@ -249,12 +249,12 @@ int RunAtOP_DEFMETHODARGTYPE(lua_State *L) {
         if (lua_type(L, lua_upvalueindex(2)) != LUA_TSTRING) //R0
             luaG_runerror(L, "method arg type define: typemode need string");
         mtype->is_typemode = 1;
-        lua_pushvalue(L, lua_upvalueindex(2)); //R1
-        mtype->type = tsvalue(index2value(L, -1)); //R1
         //绑定GC到MethodArgType
-        lua_pushnil(L); //R2
-        setuvalue(L, index2value(L,-1), mtype->udata); //R2
-        lua_setiuservalue(L, -1, OBJLUA_UV_gc + 1); //R1
+        lua_pushnil(L); //R1
+        setuvalue(L, index2value(L,-1), mtype->udata); //R1
+        lua_pushvalue(L, lua_upvalueindex(2)); //R2
+        mtype->type = tsvalue(index2value(L, -1)); //R2
+        lua_setiuservalue(L, -2, OBJLUA_UV_gc + 1); //R1
         lua_pop(L, 1);
         // lua_setiuservalue(L, lua_upvalueindex(1), OBJLUA_UV_gc+1); //R0
     } else if (typeflags & TYPEMASK_is_classmode) {
@@ -270,11 +270,12 @@ int RunAtOP_DEFMETHODARGTYPE(lua_State *L) {
         if (!lua_toboolean(L, -1)) goto badclassmode; //R2
         lua_pop(L, 2); //R0
         mtype->is_classmode = 1;
-        mtype->clazz = (LuaObjUData *) lua_touserdata(L, lua_upvalueindex(2)); //R0
         //绑定GC到MethodArgType
-        lua_pushnil(L); //R2
-        setuvalue(L, index2value(L,-1), mtype->udata); //R2
-        lua_setiuservalue(L, -1, OBJLUA_UV_gc + 1); //R1
+        lua_pushnil(L); //R1
+        setuvalue(L, index2value(L,-1), mtype->udata); //R1
+        lua_pushvalue(L, lua_upvalueindex(2)); //R2
+        mtype->clazz = (LuaObjUData *) lua_touserdata(L, -1); //R2
+        lua_setiuservalue(L, -2, OBJLUA_UV_gc + 1); //R1
         lua_pop(L, 1);
         // lua_setiuservalue(L, lua_upvalueindex(1), OBJLUA_UV_gc+1); //R0
     } else luaG_runerror(L, "method arg type define: unknown typeflags");
@@ -582,7 +583,10 @@ static int ObjudataMT__abstractcall(lua_State *L) {
         LuaObjMethod *method = polymorphism_overload_method(L, methodName, 1, nargs, methodClassOrObj, 0, 1, 0);
         // 不信赖methodClassOrObj那就从classOrObj从头找，除非中途增加新方法，但是这对吗？这不对吧，增加方法说明还是定义阶段，定义阶段哪里来的CallMethod
         // LuaObjMethod *method = polymorphism_overload_method(L, methodName, 1, nargs, classOrObj, 0, 1, 0);
-        if (!method) luaG_runerror(L, "method not found");
+        if (!method) {
+            method = polymorphism_overload_method(L, methodName, 1, nargs, methodClassOrObj, 0, 1, 0);
+            luaG_runerror(L, "method '%s' not found",getstr(methodName));
+        }
         LuaObjAccessFlags flags = method->flags;
         if (flags & LUAOBJ_ACCESS_PUBLIC) {
         do_call:;
@@ -1124,6 +1128,7 @@ int Objudata_DefMethod(lua_State *L) {
     //先拿到clazz的GC表
     lua_getiuservalue(L, 1, OBJLUA_UV_gc + 1); //R3 GC表
     int CLASS_GCIDX = luaL_len(L, -1); //R3
+    // printf("[%d]%d VS %d\n",__LINE__,CLASS_GCIDX,luaH_getn(hvalue(s2v(L->top.p-1))));
     //挂载到clazz的GC
     lua_pushvalue(L, -2); //R4 Method
     lua_rawseti(L, -2, ++CLASS_GCIDX); //R3
