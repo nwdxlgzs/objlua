@@ -50,7 +50,7 @@ methodName(params) -> return_value
 - **特殊方法名**：
   - 支持名称格式（`NAME`）和字符串格式（`"NAME"`）
   - 元方法禁止定义 `__index`, `__newindex`, `__call`
-  
+
 
 ## 4. 字段定义
 
@@ -86,7 +86,7 @@ fieldName [= value]
 - **执行环境**:
   - 静态方法中可用 `self` 访问类本身、可用 `super` 访问父类
   - 实例方法中可用 `self` 访问对象本身、可用 `super` 访问父对象
-    
+
 
 
 ## 6. 抽象方法
