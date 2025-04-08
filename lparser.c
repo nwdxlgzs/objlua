@@ -1291,19 +1291,19 @@ static const struct {
     lu_byte right; /* right priority */
 } priority[] = {
     /* ORDER OPR */
-    {10, 10},
-    {10, 10}, /* '+' '-' */
-    {11, 11},
-    {11, 11}, /* '*' '%' */
-    {14, 13}, /* '^' (right associative) */
-    {11, 11},
-    {11, 11}, /* '/' '//' */
-    {6, 6},
-    {4, 4},
-    {5, 5}, /* '&' '|' '~' */
-    {7, 7},
-    {7, 7}, /* '<<' '>>' */
-    {9, 8}, /* '..' (right associative) */
+    {10+1, 10+1},
+    {10+1, 10+1}, /* '+' '-' */
+    {11+1, 11+1},
+    {11+1, 11+1}, /* '*' '%' */
+    {14+1, 13+1}, /* '^' (right associative) */
+    {11+1, 11+1},
+    {11+1, 11+1}, /* '/' '//' */
+    {6+1, 6+1},
+    {4+1, 4+1},
+    {5+1, 5+1}, /* '&' '|' '~' */
+    {7+1, 7+1},
+    {7+1, 7+1}, /* '<<' '>>' */
+    {9+1, 8+1}, /* '..' (right associative) */
     {4, 4},
     {4, 4}, /* 'typeof' 'instanceof' */
     {3, 3},
@@ -1316,7 +1316,7 @@ static const struct {
     {1, 1} /* and, or */
 };
 
-#define UNARY_PRIORITY    12  /* priority for unary operators */
+#define UNARY_PRIORITY    12+1  /* priority for unary operators */
 
 
 /*
