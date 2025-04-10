@@ -648,6 +648,7 @@ static int ObjudataMT__indexImpl(lua_State *L, LuaObjUData *origin, LuaObjUData 
         method = classOrObj->methods[i];
         flags = method->flags;
         if (flags & LUAOBJ_ACCESS_PRIVATE && !have_access) continue;
+        if (!(flags & LUAOBJ_ACCESS_STATIC) && origin->is_class) continue;
         if (luaS_streq(method->name, key)) {
             //肯定不能直接返回这个方法，因为多态，返回一个代理函数，干__call的活，abstractcall传origin
             lua_pushnil(L);
