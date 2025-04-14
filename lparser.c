@@ -27,6 +27,7 @@
 #include "lstate.h"
 #include "lstring.h"
 #include "ltable.h"
+#include "lobjudata.h"
 
 
 /* maximum number of local variables per function (must be smaller
@@ -2261,6 +2262,17 @@ static void classstat(LexState *ls, int islocal) {
     }
 }
 
+static void annotateSwitch(LexState *ls) {
+    TString *annotate = str_checkname(ls);
+    if (eqstr(annotate, luaS_newliteral(ls->L, "class_off"))) {
+        ls->objlex = 0;
+        luaX_setDefaultObjLex(0);
+    } else if (eqstr(annotate, luaS_newliteral(ls->L, "class_on"))) {
+        ls->objlex = 1;
+        luaX_setDefaultObjLex(1);
+    }
+}
+
 static void statement(LexState *ls) {
     int line = ls->linenumber; /* may be needed for error messages */
     enterlevel(ls);
@@ -2339,6 +2351,11 @@ static void statement(LexState *ls) {
         case TK_CLASS: {
             luaX_next(ls);
             classstat(ls, 0);
+            break;
+        }
+        case '@': {//注解
+            luaX_next(ls);
+            annotateSwitch(ls);
             break;
         }
         default: {

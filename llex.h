@@ -79,6 +79,7 @@ typedef struct LexState {
     struct Dyndata *dyd; /* dynamic structures used by the parser */
     TString *source; /* current source name */
     TString *envn; /* environment variable name */
+    int objlex;
 } LexState;
 
 
@@ -97,5 +98,8 @@ LUAI_FUNC l_noret luaX_syntaxerror(LexState *ls, const char *s);
 
 LUAI_FUNC const char *luaX_token2str(LexState *ls, int token);
 
+LUAI_FUNC int luaX_getDefaultObjLex();
+
+LUAI_FUNC void luaX_setDefaultObjLex(int boo);
 
 #endif

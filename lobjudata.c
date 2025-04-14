@@ -1,6 +1,20 @@
 #define lobjudata_c
 #define LUA_CORE
-
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include "lua.h"
+#include "lauxlib.h"
+#include "lobject.h"
+#include "lparser.h"
+#include "lstate.h"
+#include "lstring.h"
+#include "lfunc.h"
+#include "lapi.h"
+#include "ldebug.h"
+#include "lvm.h"
+#include "ltable.h"
 #include "lobjudata.h"
 
 int Objudata_init(lua_State *L) {
@@ -29,48 +43,48 @@ int Objudata_init(lua_State *L) {
  */
 static int ObjudataMT__setup(lua_State *L, int idx);
 
-//SuperNip永远成功率为0的战术，我GC的最后备手，查看一下有哪些挂载进GC了，GC问题困扰我太久了，还得是完成的打LOG，Lua虚拟机一步一步追踪，十几行代码从头追能追几个小时
-static void SuperNipClass(lua_State *L, LuaObjUData *obj, int line, const char *file) {
-    Table *gct = hvalue(&obj->udata->uv[OBJLUA_UV_gc].uv);
-    printf("===================================\n");
-    printf("On File:%s Line:%d\n", file, line);
-    printf("LuaObjUData->%p\n", obj);
-    printf("alimit->%d\n", gct->alimit);
-    for (int n = 0; n < gct->alimit; n++) {
-        TValue *o = &gct->array[n];
-        if (ttisfulluserdata(o)) {
-            printf("userdata->%p\n", getudatamem(uvalue(o)));
-        } else {
-            printf("TValue->%p type=%s\n", o, ttypename(ttype(o)));
-        }
-    }
-    TValue *o = &obj->udata->uv[OBJLUA_UV_fields].uv;
-    if (!ttisnil(o)) printf("fields->%p\n", getudatamem(uvalue(o)));
-    o = &obj->udata->uv[OBJLUA_UV_methods].uv;
-    if (!ttisnil(o))printf("methods->%p\n", getudatamem(uvalue(o)));
-    o = &obj->udata->uv[OBJLUA_UV_constructors].uv;
-    if (!ttisnil(o))printf("constructors->%p\n", getudatamem(uvalue(o)));
-    o = &obj->udata->uv[OBJLUA_UV_metamethods].uv;
-    if (!ttisnil(o))printf("metamethods->%p\n", getudatamem(uvalue(o)));
-
-    fflush(stdout); // 立即输出
-}
-
-static void SuperNipMethod(lua_State *L, LuaObjMethod *meth) {
-    Table *gct = hvalue(&meth->udata->uv[OBJLUA_UV_gc].uv);
-    printf("===================================\n");
-    printf("LuaObjMethod->%p\n", meth);
-    printf("alimit->%d\n", gct->alimit);
-    for (int n = 0; n < gct->alimit; n++) {
-        TValue *o = &gct->array[n];
-        if (ttisfulluserdata(o)) {
-            printf("userdata->%p\n", getudatamem(uvalue(o)));
-        } else {
-            printf("TValue->%p type=%s\n", o, ttypename(ttype(o)));
-        }
-    }
-    fflush(stdout); // 立即输出
-}
+// //SuperNip永远成功率为0的战术，我GC的最后备手，查看一下有哪些挂载进GC了，GC问题困扰我太久了，还得是完成的打LOG，Lua虚拟机一步一步追踪，十几行代码从头追能追几个小时
+// static void SuperNipClass(lua_State *L, LuaObjUData *obj, int line, const char *file) {
+//     Table *gct = hvalue(&obj->udata->uv[OBJLUA_UV_gc].uv);
+//     printf("===================================\n");
+//     printf("On File:%s Line:%d\n", file, line);
+//     printf("LuaObjUData->%p\n", obj);
+//     printf("alimit->%d\n", gct->alimit);
+//     for (int n = 0; n < gct->alimit; n++) {
+//         TValue *o = &gct->array[n];
+//         if (ttisfulluserdata(o)) {
+//             printf("userdata->%p\n", getudatamem(uvalue(o)));
+//         } else {
+//             printf("TValue->%p type=%s\n", o, ttypename(ttype(o)));
+//         }
+//     }
+//     TValue *o = &obj->udata->uv[OBJLUA_UV_fields].uv;
+//     if (!ttisnil(o)) printf("fields->%p\n", getudatamem(uvalue(o)));
+//     o = &obj->udata->uv[OBJLUA_UV_methods].uv;
+//     if (!ttisnil(o))printf("methods->%p\n", getudatamem(uvalue(o)));
+//     o = &obj->udata->uv[OBJLUA_UV_constructors].uv;
+//     if (!ttisnil(o))printf("constructors->%p\n", getudatamem(uvalue(o)));
+//     o = &obj->udata->uv[OBJLUA_UV_metamethods].uv;
+//     if (!ttisnil(o))printf("metamethods->%p\n", getudatamem(uvalue(o)));
+//
+//     fflush(stdout); // 立即输出
+// }
+//
+// static void SuperNipMethod(lua_State *L, LuaObjMethod *meth) {
+//     Table *gct = hvalue(&meth->udata->uv[OBJLUA_UV_gc].uv);
+//     printf("===================================\n");
+//     printf("LuaObjMethod->%p\n", meth);
+//     printf("alimit->%d\n", gct->alimit);
+//     for (int n = 0; n < gct->alimit; n++) {
+//         TValue *o = &gct->array[n];
+//         if (ttisfulluserdata(o)) {
+//             printf("userdata->%p\n", getudatamem(uvalue(o)));
+//         } else {
+//             printf("TValue->%p type=%s\n", o, ttypename(ttype(o)));
+//         }
+//     }
+//     fflush(stdout); // 立即输出
+// }
 
 
 CClosure *RunAtPrepare(lua_State *L, const int nupvals, const lua_CFunction f) {

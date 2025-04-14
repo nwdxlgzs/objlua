@@ -15,7 +15,6 @@ typedef struct CallInfo CallInfo;
 
 
 #include "lobject.h"
-#include "lobjudata.h"
 #include "ltm.h"
 #include "lzio.h"
 

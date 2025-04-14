@@ -26,6 +26,7 @@
 #include "lstring.h"
 #include "ltable.h"
 #include "ltm.h"
+#include "lobjudata.h"
 
 
 

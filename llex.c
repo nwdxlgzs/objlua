@@ -166,6 +166,15 @@ static void inclinenumber(LexState *ls) {
         lexerror(ls, "chunk has too many lines", 0);
 }
 
+static int DefaultObjLex = 1;
+
+int luaX_getDefaultObjLex() {
+    return DefaultObjLex;
+}
+
+void luaX_setDefaultObjLex(int boo) {
+    DefaultObjLex = boo;
+}
 
 void luaX_setinput(lua_State *L, LexState *ls, ZIO *z, TString *source,
                    int firstchar) {
@@ -179,6 +188,7 @@ void luaX_setinput(lua_State *L, LexState *ls, ZIO *z, TString *source,
     ls->lastline = 1;
     ls->source = source;
     ls->envn = luaS_newliteral(L, LUA_ENV); /* get env name */
+    ls->objlex = DefaultObjLex;
     luaZ_resizebuffer(ls->L, ls->buff, LUA_MINBUFFER); /* initialize buffer */
 }
 
@@ -500,7 +510,7 @@ static int llex(LexState *ls, SemInfo *seminfo) {
             case '-': {
                 /* '-' or '--' (comment) */
                 next(ls);
-                if (check_next1(ls,'>')) return TK_LAMBDA_ARROW;
+                if (check_next1(ls, '>')) return TK_LAMBDA_ARROW;
                 if (ls->current != '-') return '-';
                 /* else is a comment */
                 next(ls);
@@ -602,9 +612,21 @@ static int llex(LexState *ls, SemInfo *seminfo) {
                     ts = luaX_newstring(ls, luaZ_buffer(ls->buff),
                                         luaZ_bufflen(ls->buff));
                     seminfo->ts = ts;
-                    if (isreserved(ts)) /* reserved word? */
+                    if (isreserved(ts)) {
+                        /* reserved word? */
+                        if (!ls->objlex) {
+                            //非面向对象语法状态时，关键字不被认为是保留字
+                            const int tk = ts->extra - 1 + FIRST_RESERVED;
+                            switch (tk) {
+                                case TK_CLASS:
+                                case TK_TYPEOF:
+                                case TK_INSTANCEOF:
+                                    return TK_NAME;
+                                default: break;
+                            }
+                        }
                         return ts->extra - 1 + FIRST_RESERVED;
-                    else {
+                    } else {
                         return TK_NAME;
                     }
                 } else {

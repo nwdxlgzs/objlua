@@ -7,6 +7,8 @@
 #include "lauxlib.h"
 #include "lobject.h"
 #include "lparser.h"
+#include "lstate.h"
+
 /*
 重构垃圾回收，交回大部份GC控制权给Lua，
 比如LuaObjField|LuaObjMethod等数据直接挂在LuaObjUData的元表里或者上值里直接保持引用（这里使用上值直接存，省的设计一个键了，毕竟lua5.4.7提供了，低版本把GC挂进元表里就OK了）
