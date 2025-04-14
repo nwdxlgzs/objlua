@@ -185,6 +185,17 @@ pram:<type>
 ```
 可通过`int lua_compare(lua_State *L, int index1, int index2, int op)`进行`typeof`/`instanceof`比较运算
 
+# 切换语法
+```lua
+@class_on
+class A{}
+```
+```lua
+@class_off
+print(class)
+```
+由于部分Lua组件可能内置Lua脚本源码进行执行（如iuplua），内置脚本使用了`class`/`typeof`/`instanceof`关键字，可通过上述方法切换模式，切换模式会影响当前Lua解析以及设置后的新Lua源码解析时的默认状态（默认开）。
+
 # 演示与字节码解析
 ### [点我跳转](https://github.com/nwdxlgzs/objlua-bytecode-parse)
 
