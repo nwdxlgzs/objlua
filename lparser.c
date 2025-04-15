@@ -2263,7 +2263,9 @@ static void classstat(LexState *ls, int islocal) {
 }
 
 static void annotateSwitch(LexState *ls) {
-    TString *annotate = str_checkname(ls);
+    TString *annotate;
+    check(ls, TK_NAME);
+    annotate = ls->t.seminfo.ts;
     if (eqstr(annotate, luaS_newliteral(ls->L, "class_off"))) {
         ls->objlex = 0;
         luaX_setDefaultObjLex(0);
@@ -2271,6 +2273,7 @@ static void annotateSwitch(LexState *ls) {
         ls->objlex = 1;
         luaX_setDefaultObjLex(1);
     }
+    luaX_next(ls);
 }
 
 static void statement(LexState *ls) {
