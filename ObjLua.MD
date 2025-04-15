@@ -107,7 +107,8 @@ cat2 = Cat("咪咪")
 		 function funcname funcbody | 
 		 local function Name funcbody | 
 		 local attnamelist [‘=’ explist] |
-		 [local] class Name [‘:’ Name] ‘{’ {classdefbody} ‘}’
+		 [local] class Name [‘:’ Name] ‘{’ {classdefbody} ‘}’ |
+         annotate 
 	
 	classdefbody ::= fielddef ‘;’ | methoddef [‘;’]
 	
