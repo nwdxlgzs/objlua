@@ -1,3 +1,5 @@
+#define lobjlualib_c
+#define LUA_LIB
 #include "lua.h"
 #include "lualib.h"
 #include "lapi.h"
