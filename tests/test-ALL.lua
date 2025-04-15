@@ -25,6 +25,7 @@ local files = {
     "test-lambda.lua",
     "test-dyn-field.lua",
     "test-hotfix.lua",
+    "test-classonoff.lua",
 }
 for i, file in ipairs(files) do
     local path = "../tests/" .. file
