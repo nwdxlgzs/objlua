@@ -1,5 +1,6 @@
 #define lobjlualib_c
 #define LUA_LIB
+
 #include "lua.h"
 #include "lualib.h"
 #include "lapi.h"
@@ -103,7 +104,7 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
     int idx = 0;
     switch (flag) {
         case FLAG_CommonGet_Fields: {
-        next_fields:
+            next_fields:
             for (int i = 0; i < classOrObj->size_fields; ++i) {
                 LuaObjField *field = classOrObj->fields[i];
                 lua_pushlightuserdata(L, field);
@@ -116,7 +117,7 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
             break;
         }
         case FLAG_CommonSet_Methods: {
-        next_methods:
+            next_methods:
             for (int i = 0; i < classOrObj->size_methods; ++i) {
                 LuaObjMethod *method = classOrObj->methods[i];
                 lua_pushlightuserdata(L, method);
@@ -129,7 +130,7 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
             break;
         }
         case FLAG_CommonGet_Constructors: {
-        next_constructors:
+            next_constructors:
             for (int i = 0; i < classOrObj->size_constructors; ++i) {
                 LuaObjMethod *constructor = classOrObj->constructors[i];
                 lua_pushlightuserdata(L, constructor);
@@ -142,7 +143,7 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
             break;
         }
         case FLAG_CommonGet_Metamethods: {
-        next_metamethods:
+            next_metamethods:
             for (int i = 0; i < classOrObj->size_metamethods; ++i) {
                 LuaObjMethod *metamethod = classOrObj->metamethods[i];
                 lua_pushlightuserdata(L, metamethod);
@@ -155,7 +156,7 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
             break;
         }
         case FLAG_CommonGet_AbstractMethods: {
-        next_abstractmethods:
+            next_abstractmethods:
             for (int i = 0; i < classOrObj->size_abstractmethods; ++i) {
                 LuaObjMethod *abstractmethod = classOrObj->abstractmethods[i];
                 lua_pushlightuserdata(L, abstractmethod);
@@ -264,7 +265,8 @@ LUA_API int objlua_getName(lua_State *L) {
         TValue *o = index2value(L, 1);
         const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
         const TValue *slot;
-        if (!luaV_fastget(L, ObjLuaWeakTable, o, slot, luaH_get) && ttistrue(slot)) goto badtype_ret;
+        if (!luaV_fastget(L, ObjLuaWeakTable, o, slot, luaH_get) && ttistrue(slot))
+            goto badtype_ret;
         const LuaObjUData *classOrObj = lua_touserdata(L, 1);
         lua_pushnil(L);
         if (classOrObj->name) {
@@ -281,7 +283,7 @@ LUA_API int objlua_getName(lua_State *L) {
         }
         return 1;
     } else {
-    badtype_ret:;
+        badtype_ret:;
         lua_pushnil(L);
         return 1;
     }
@@ -301,13 +303,13 @@ LUA_API int objlua_getMethodFunction(lua_State *L) {
 }
 
 LUA_API int objlua_typeof(lua_State *L) {
-    int b = lua_compare(L, 1, 2,LUA_OPTYPEOF);
+    int b = lua_compare(L, 1, 2, LUA_OPTYPEOF);
     lua_pushboolean(L, b);
     return 1;
 }
 
 LUA_API int objlua_instanceof(lua_State *L) {
-    int b = lua_compare(L, 1, 2,LUA_OPINSTANCEOF);
+    int b = lua_compare(L, 1, 2, LUA_OPINSTANCEOF);
     lua_pushboolean(L, b);
     return 1;
 }
@@ -351,7 +353,7 @@ LUA_API int objlua_getMethodInit(lua_State *L) {
             && wrapcall->nupvalues >= 2) {
             TValue *selfTV = &wrapcall->upvalue[0];
             LuaObjUData *classobj = (LuaObjUData *) getudatamem(uvalue(selfTV));
-            setobj2n(L, index2value(L,1), selfTV);
+            setobj2n(L, index2value(L, 1), selfTV);
             if (classobj->super) setuvalue(L, index2value(L, 2), classobj->super->udata);
         }
     }
@@ -389,7 +391,7 @@ LUA_API int objlua_getMethodArgTypes(lua_State *L) {
             lua_pushinteger(L, nargs);
             lua_setfield(L, -2, "nargs");
             for (lu_byte i = 0; i < nargs; ++i) {
-                MethodArgType* argType = method->argtypes[i];
+                MethodArgType *argType = method->argtypes[i];
                 lua_newtable(L);
                 lua_pushboolean(L, argType->none);
                 lua_setfield(L, -2, "none");
@@ -413,41 +415,77 @@ LUA_API int objlua_getMethodArgTypes(lua_State *L) {
     return 1;
 }
 
+static int objlua_hasXX(lua_State *L, lua_CFunction getter) {
+    // 1:classobj 2:name
+    if (lua_gettop(L) < 2 || !lua_isstring(L, 2)) {
+        lua_pushboolean(L, 0); // 返回false
+        return 1;
+    }
+    TString *target_name = tsvalue(index2value(L, 2));
+    lua_pushcfunction(L, getter);
+    lua_pushvalue(L, 1);
+    lua_call(L, 1, 1);
+    int found = 0;
+    int table_size = (int) luaL_len(L, -1);
+    for (int i = 1; i <= table_size; i++) {
+        lua_rawgeti(L, -1, i);
+        FMStruct *mf = lua_touserdata(L, -1);
+        lua_pop(L, 1);
+        if (luaS_streq(mf->name, target_name)) {
+            found = 1;
+            break;
+        }
+    }
+    lua_pop(L, 1);
+    lua_pushboolean(L, found);
+    return 1;
+}
+
+LUA_API int objlua_hasMethod(lua_State *L) {
+    return objlua_hasXX(L, objlua_getMethods);
+}
+
+LUA_API int objlua_hasField(lua_State *L) {
+    return objlua_hasXX(L, objlua_getFields);
+}
+
 static const luaL_Reg objluaLib[] = {
-    {"getSuper", objlua_getSuper},
-    {"getClass", objlua_getClass},
-    {"isClass", objlua_isClass},
-    {"isObject", objlua_isObject},
-    {"getDeclaredFields", objlua_getDeclaredFields},
-    {"getFields", objlua_getFields},
-    {"getDeclaredMethods", objlua_getDeclaredMethods},
-    {"getMethods", objlua_getMethods},
-    {"getDeclaredConstructors", objlua_getDeclaredConstructors},
-    {"getConstructors", objlua_getConstructors},
-    {"getDeclaredMetamethods", objlua_getDeclaredMetamethods},
-    {"getMetamethods", objlua_getMetamethods},
-    {"getDeclaredAbstractMethods", objlua_getDeclaredAbstractMethods},
-    {"getAbstractMethods", objlua_getAbstractMethods},
-    {"isPublic", objlua_isPublic},
-    {"isPrivate", objlua_isPrivate},
-    {"isStatic", objlua_isStatic},
-    {"isConst", objlua_isConst},
-    {"isMeta", objlua_isMeta},
-    {"isAbstract", objlua_isAbstract},
-    {"isConstructor", objlua_isConstructor},
-    {"isNoWrap", objlua_isNoWrap},
-    {"isMethod", objlua_isMethod},
-    {"isField", objlua_isField},
-    {"getName", objlua_getName},
-    {"getMethodFunction", objlua_getMethodFunction},
-    {"typeof", objlua_typeof},
-    {"instanceof", objlua_instanceof},
-    {"hotfixMethod", objlua_hotfixMethod},
-    {"getMethodInit", objlua_getMethodInit},
-    {"getFieldValue", objlua_getFieldValue},
-    {"setFieldValue", objlua_setFieldValue},
-    {"getMethodArgTypes", objlua_getMethodArgTypes},
-    {NULL, NULL}
+        {"getSuper",                   objlua_getSuper},
+        {"getClass",                   objlua_getClass},
+        {"isClass",                    objlua_isClass},
+        {"isObject",                   objlua_isObject},
+        {"getDeclaredFields",          objlua_getDeclaredFields},
+        {"getFields",                  objlua_getFields},
+        {"getDeclaredMethods",         objlua_getDeclaredMethods},
+        {"getMethods",                 objlua_getMethods},
+        {"getDeclaredConstructors",    objlua_getDeclaredConstructors},
+        {"getConstructors",            objlua_getConstructors},
+        {"getDeclaredMetamethods",     objlua_getDeclaredMetamethods},
+        {"getMetamethods",             objlua_getMetamethods},
+        {"getDeclaredAbstractMethods", objlua_getDeclaredAbstractMethods},
+        {"getAbstractMethods",         objlua_getAbstractMethods},
+        {"isPublic",                   objlua_isPublic},
+        {"isPrivate",                  objlua_isPrivate},
+        {"isStatic",                   objlua_isStatic},
+        {"isConst",                    objlua_isConst},
+        {"isMeta",                     objlua_isMeta},
+        {"isAbstract",                 objlua_isAbstract},
+        {"isConstructor",              objlua_isConstructor},
+        {"isNoWrap",                   objlua_isNoWrap},
+        {"isMethod",                   objlua_isMethod},
+        {"isField",                    objlua_isField},
+        {"getName",                    objlua_getName},
+        {"getMethodFunction",          objlua_getMethodFunction},
+        {"typeof",                     objlua_typeof},
+        {"instanceof",                 objlua_instanceof},
+        {"hotfixMethod",               objlua_hotfixMethod},
+        {"getMethodInit",              objlua_getMethodInit},
+        {"getFieldValue",              objlua_getFieldValue},
+        {"setFieldValue",              objlua_setFieldValue},
+        {"getMethodArgTypes",          objlua_getMethodArgTypes},
+        {"hasMethod",                  objlua_hasMethod},
+        {"hasField",                   objlua_hasField},
+        {NULL, NULL}
 };
 
 LUAMOD_API int luaopen_objlua(lua_State *L) {
