@@ -149,34 +149,36 @@ pram:<type>
 | isClass                  | 判断当前输入是否为类，非类非对象返回 `false`                                                                |
 | isObject                 | 判断当前输入是否为对象，非类非对象返回 `false`                                                              |
 | getDeclaredFields        | 获取定义的字段                                                                                            |
-| getFields                | 获取包含父类在内的全部字段                                                                                |
-| getDeclaredMethods       | 获取定义的方法（不包括元方法、构造方法、降级的构造方法、抽象方法）                                        |
-| getMethods               | 获取包含父类在内的全部方法（不包括元方法、构造方法、降级的构造方法、抽象方法）                            |
+| getFields                | 获取包含父类在内的全部字段                                                                                 |
+| getDeclaredMethods       | 获取定义的方法（不包括元方法、构造方法、降级的构造方法、抽象方法）                                             |
+| getMethods               | 获取包含父类在内的全部方法（不包括元方法、构造方法、降级的构造方法、抽象方法）                                  |
 | getDeclaredConstructors  | 获取定义的构造方法                                                                                        |
-| getConstructors          | 获取包含父类在内的全部构造方法                                                                            |
+| getConstructors          | 获取包含父类在内的全部构造方法                                                                             |
 | getDeclaredMetamethods   | 获取定义的元方法                                                                                          |
-| getMetamethods           | 获取包含父类在内的全部元方法                                                                              |
+| getMetamethods           | 获取包含父类在内的全部元方法                                                                               |
 | getDeclaredAbstractMethods | 获取定义的抽象方法                                                                                      |
-| getAbstractMethods       | 获取包含父类在内的全部抽象方法                                                                            |
-| isPublic                 | 判断字段或方法是否有 `public` 访问修饰符                                                                    |
-| isPrivate                | 判断字段或方法是否有 `private` 访问修饰符                                                                   |
-| isStatic                 | 判断字段或方法是否有 `static` 限定符                                                                        |
-| isConst                  | 判断字段或方法是否有 `const` 限定符                                                                         |
-| isMeta                   | 判断字段或方法是否有 `@meta` 注解                                                                           |
-| isAbstract               | 判断字段或方法是否有 `@abstract` 注解                                                                       |
+| getAbstractMethods       | 获取包含父类在内的全部抽象方法                                                                             |
+| isPublic                 | 判断字段或方法是否有 `public` 访问修饰符                                                                   |
+| isPrivate                | 判断字段或方法是否有 `private` 访问修饰符                                                                  |
+| isStatic                 | 判断字段或方法是否有 `static` 限定符                                                                       |
+| isConst                  | 判断字段或方法是否有 `const` 限定符                                                                        |
+| isMeta                   | 判断字段或方法是否有 `@meta` 注解                                                                          |
+| isAbstract               | 判断字段或方法是否有 `@abstract` 注解                                                                      |
 | isConstructor            | 判断是否是构造方法                                                                                        |
-| isNoWrap                 | 判断是否有 `@nowrap` 注解                                                                                   |
-| isMethod                 | 判断是否是方法（需根据标志判断）                                                                          |
-| isField                  | 判断是否是字段（需根据标志判断）                                                                          |
-| getName                  | 获取类名、方法名、字段名，均无法获取时返回 `nil`                                                            |
-| getMethodFunction        | 获取方法的实际 Lua 函数                                                                                   |
-| typeof                   | `typeof` 二元运算的库函数版本                                                                               |
-| instanceof               | `instanceof` 二元运算的库函数版本                                                                           |
+| isNoWrap                 | 判断是否有 `@nowrap` 注解                                                                                 |
+| isMethod                 | 判断是否是方法（需根据标志判断）                                                                            |
+| isField                  | 判断是否是字段（需根据标志判断）                                                                            |
+| getName                  | 获取类名、方法名、字段名，均无法获取时返回 `nil`                                                             |
+| getMethodFunction        | 获取方法的实际 Lua 函数                                                                                    |
+| typeof                   | `typeof` 二元运算的库函数版本                                                                              |
+| instanceof               | `instanceof` 二元运算的库函数版本                                                                          |
 | hotfixMethod             | 热修复方法，将方法替换为指定的新 Lua 函数（需显式声明 `self` 和 `super` 形参）                                |
-| getMethodInit            | 手动执行 `OP_METHODINIT` 指令，返回 `self` 与 `super`                                                           |
-| getFieldValue            | 获取字段值（动态字段未设置 `@nowrap` 时获取的是初始化函数）                                                 |
-| setFieldValue            | 设置字段值且不触发 `const` 相关机制（动态字段可在有 `@nowrap` 标志的方法中设置初始化函数）                    |
-| getMethodArgTypes        | 获取方法定义的参数声明，声明数量通过键 `nargs` 获知                                                       |
+| getMethodInit            | 手动执行 `OP_METHODINIT` 指令，返回 `self` 与 `super`                                                      |
+| getFieldValue            | 获取字段值（动态字段未设置 `@nowrap` 时获取的是初始化函数）                                                  |
+| setFieldValue            | 设置字段值且不触发 `const` 相关机制（动态字段可在有 `@nowrap` 标志的方法中设置初始化函数）                     |
+| getMethodArgTypes        | 获取方法定义的参数声明，声明数量通过键 `nargs` 获知                                                          |
+| hasMethod                | 指定类或对象、名称，判断是否存在对应方法                                                                     |
+| hasField                 | 指定类或对象、名称，判断是否存在对应字段                                                                     |
 
 # LuaAPI
 ```c
