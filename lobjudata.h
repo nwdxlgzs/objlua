@@ -130,21 +130,103 @@ struct LuaObjUData {
     //udata自己
     Udata *udata;
 };
+
 LUAI_FUNC int Objudata_init(lua_State *L);
-LUAI_FUNC CClosure* RunAtPrepare(lua_State *L, const int nupvals, const lua_CFunction f);
+
+LUAI_FUNC CClosure *RunAtPrepare(lua_State *L, const int nupvals, const lua_CFunction f);
+
 LUAI_FUNC int RunAtOP_DEFCLASS(lua_State *L);
+
 LUAI_FUNC int RunAtOP_DEFFIELD(lua_State *L);
+
 LUAI_FUNC int RunAtOP_DEFMETHODARGTYPE(lua_State *L);
+
 LUAI_FUNC int RunAtOP_DEFMETHOD(lua_State *L);
+
 LUAI_FUNC int Objudata_MethodWrapCall(lua_State *L);
 
 LUAI_FUNC int Objudata_metaProxy(lua_State *L);
+
 LUAI_FUNC int Objudata_DefConstructor(lua_State *L);
+
 LUAI_FUNC int Objudata_DefMetaMethod(lua_State *L);
+
 LUAI_FUNC int Objudata_DefField(lua_State *L);
+
 LUAI_FUNC int Objudata_DefMethod(lua_State *L);
+
 LUAI_FUNC int Objudata_DefAbstractMethod(lua_State *L);
 
 LUAI_FUNC inline int luaS_streq(TString *left, TString *right);
+
+LUA_API int objlua_getSuper(lua_State *L);
+
+LUA_API int objlua_getClass(lua_State *L);
+
+LUA_API int objlua_isClass(lua_State *L);
+
+LUA_API int objlua_isObject(lua_State *L);
+
+LUA_API int objlua_getDeclaredFields(lua_State *L);
+
+LUA_API int objlua_getFields(lua_State *L);
+
+LUA_API int objlua_getDeclaredMethods(lua_State *L);
+
+LUA_API int objlua_getMethods(lua_State *L);
+
+LUA_API int objlua_getDeclaredConstructors(lua_State *L);
+
+LUA_API int objlua_getConstructors(lua_State *L);
+
+LUA_API int objlua_getDeclaredMetamethods(lua_State *L);
+
+LUA_API int objlua_getMetamethods(lua_State *L);
+
+LUA_API int objlua_getDeclaredAbstractMethods(lua_State *L);
+
+LUA_API int objlua_getAbstractMethods(lua_State *L);
+
+LUA_API int objlua_isPublic(lua_State *L);
+
+LUA_API int objlua_isPrivate(lua_State *L);
+
+LUA_API int objlua_isStatic(lua_State *L);
+
+LUA_API int objlua_isConst(lua_State *L);
+
+LUA_API int objlua_isMeta(lua_State *L);
+
+LUA_API int objlua_isAbstract(lua_State *L);
+
+LUA_API int objlua_isConstructor(lua_State *L);
+
+LUA_API int objlua_isNoWrap(lua_State *L);
+
+LUA_API int objlua_isMethod(lua_State *L);
+
+LUA_API int objlua_isField(lua_State *L);
+
+LUA_API int objlua_getName(lua_State *L);
+
+LUA_API int objlua_getMethodFunction(lua_State *L);
+
+LUA_API int objlua_typeof(lua_State *L);
+
+LUA_API int objlua_instanceof(lua_State *L);
+
+LUA_API int objlua_hotfixMethod(lua_State *L);
+
+LUA_API int objlua_getMethodInit(lua_State *L);
+
+LUA_API int objlua_getFieldValue(lua_State *L);
+
+LUA_API int objlua_setFieldValue(lua_State *L);
+
+LUA_API int objlua_getMethodArgTypes(lua_State *L);
+
+LUA_API int objlua_hasMethod(lua_State *L);
+
+LUA_API int objlua_hasField(lua_State *L);
 
 #endif
