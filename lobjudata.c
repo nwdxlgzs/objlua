@@ -967,6 +967,7 @@ static int ObjudataMT__setup(lua_State *L, int idx) {
     lua_setfield(L, idx, "__newindex");
     lua_pushcfunction(L, ObjudataMT__call);
     lua_setfield(L, idx, "__call");
+    return 0;
 }
 
 /*
