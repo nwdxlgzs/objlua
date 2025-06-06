@@ -18,7 +18,7 @@ static inline TValue *getObjLuaWeakTable(lua_State *L) {
     return ObjLuaWeakTable;
 }
 
-static int objlua_getSuper(lua_State *L) {
+LUA_API int objlua_getSuper(lua_State *L) {
     luaL_checktype(L, 1, LUA_TUSERDATA);
     TValue *o = index2value(L, 1);
     const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
@@ -37,7 +37,7 @@ static int objlua_getSuper(lua_State *L) {
     return 1;
 }
 
-static int objlua_getClass(lua_State *L) {
+LUA_API int objlua_getClass(lua_State *L) {
     luaL_checktype(L, 1, LUA_TUSERDATA);
     TValue *o = index2value(L, 1);
     const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
@@ -53,7 +53,7 @@ static int objlua_getClass(lua_State *L) {
     return 1;
 }
 
-static int objlua_isClass(lua_State *L) {
+LUA_API int objlua_isClass(lua_State *L) {
     luaL_checktype(L, 1, LUA_TUSERDATA);
     const TValue *o = index2value(L, 1);
     const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
@@ -67,7 +67,7 @@ static int objlua_isClass(lua_State *L) {
     return 1;
 }
 
-static int objlua_isObject(lua_State *L) {
+LUA_API int objlua_isObject(lua_State *L) {
     luaL_checktype(L, 1, LUA_TUSERDATA);
     const TValue *o = index2value(L, 1);
     const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
@@ -172,43 +172,43 @@ static int objlua_commonGet(lua_State *L, int flag, int declard) {
     return 1;
 }
 
-static int objlua_getDeclaredFields(lua_State *L) {
+LUA_API int objlua_getDeclaredFields(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Fields, 1);
 }
 
-static int objlua_getFields(lua_State *L) {
+LUA_API int objlua_getFields(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Fields, 0);
 }
 
-static int objlua_getDeclaredMethods(lua_State *L) {
+LUA_API int objlua_getDeclaredMethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonSet_Methods, 1);
 }
 
-static int objlua_getMethods(lua_State *L) {
+LUA_API int objlua_getMethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonSet_Methods, 0);
 }
 
-static int objlua_getDeclaredConstructors(lua_State *L) {
+LUA_API int objlua_getDeclaredConstructors(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Constructors, 1);
 }
 
-static int objlua_getConstructors(lua_State *L) {
+LUA_API int objlua_getConstructors(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Constructors, 0);
 }
 
-static int objlua_getDeclaredMetamethods(lua_State *L) {
+LUA_API int objlua_getDeclaredMetamethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Metamethods, 1);
 }
 
-static int objlua_getMetamethods(lua_State *L) {
+LUA_API int objlua_getMetamethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_Metamethods, 0);
 }
 
-static int objlua_getDeclaredAbstractMethods(lua_State *L) {
+LUA_API int objlua_getDeclaredAbstractMethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_AbstractMethods, 1);
 }
 
-static int objlua_getAbstractMethods(lua_State *L) {
+LUA_API int objlua_getAbstractMethods(lua_State *L) {
     return objlua_commonGet(L, FLAG_CommonGet_AbstractMethods, 0);
 }
 
@@ -219,47 +219,47 @@ static int objlua_commonAccessFlag(lua_State *L, int flag_mask) {
     return 1;
 }
 
-static int objlua_isPublic(lua_State *L) {
+LUA_API int objlua_isPublic(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_PUBLIC);
 }
 
-static int objlua_isPrivate(lua_State *L) {
+LUA_API int objlua_isPrivate(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_PRIVATE);
 }
 
-static int objlua_isStatic(lua_State *L) {
+LUA_API int objlua_isStatic(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_STATIC);
 }
 
-static int objlua_isConst(lua_State *L) {
+LUA_API int objlua_isConst(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_CONST);
 }
 
-static int objlua_isMeta(lua_State *L) {
+LUA_API int objlua_isMeta(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_META);
 }
 
-static int objlua_isAbstract(lua_State *L) {
+LUA_API int objlua_isAbstract(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_ABSTRACT);
 }
 
-static int objlua_isConstructor(lua_State *L) {
+LUA_API int objlua_isConstructor(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_CONSTRUCTOR);
 }
 
-static int objlua_isNoWrap(lua_State *L) {
+LUA_API int objlua_isNoWrap(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_NOWRAP);
 }
 
-static int objlua_isMethod(lua_State *L) {
+LUA_API int objlua_isMethod(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_ISMETHOD);
 }
 
-static int objlua_isField(lua_State *L) {
+LUA_API int objlua_isField(lua_State *L) {
     return objlua_commonAccessFlag(L, LUAOBJ_ACCESS_ISFIELD);
 }
 
-static int objlua_getName(lua_State *L) {
+LUA_API int objlua_getName(lua_State *L) {
     if (lua_type(L, 1) == LUA_TUSERDATA) {
         TValue *o = index2value(L, 1);
         const TValue *ObjLuaWeakTable = getObjLuaWeakTable(L);
@@ -287,7 +287,7 @@ static int objlua_getName(lua_State *L) {
     }
 }
 
-static int objlua_getMethodFunction(lua_State *L) {
+LUA_API int objlua_getMethodFunction(lua_State *L) {
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     const LuaObjMethod *method = lua_touserdata(L, 1);
     lua_pushnil(L);
@@ -300,13 +300,13 @@ static int objlua_getMethodFunction(lua_State *L) {
     return 1;
 }
 
-static int objlua_typeof(lua_State *L) {
+LUA_API int objlua_typeof(lua_State *L) {
     int b = lua_compare(L, 1, 2,LUA_OPTYPEOF);
     lua_pushboolean(L, b);
     return 1;
 }
 
-static int objlua_instanceof(lua_State *L) {
+LUA_API int objlua_instanceof(lua_State *L) {
     int b = lua_compare(L, 1, 2,LUA_OPINSTANCEOF);
     lua_pushboolean(L, b);
     return 1;
@@ -317,7 +317,7 @@ static int objlua_instanceof(lua_State *L) {
  * 参数1：需要换的方法（LUA_TLIGHTUSERDATA）
  * 参数2：替换函数（需要显式预留self、super参数）
  */
-static int objlua_hotfixMethod(lua_State *L) {
+LUA_API int objlua_hotfixMethod(lua_State *L) {
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     luaL_checktype(L, 2, LUA_TFUNCTION);
     lua_settop(L, 2);
@@ -338,7 +338,7 @@ static int objlua_hotfixMethod(lua_State *L) {
     return 1;
 }
 
-static int objlua_getMethodInit(lua_State *L) {
+LUA_API int objlua_getMethodInit(lua_State *L) {
     CallInfo *lastCall = L->ci->previous; //lua
     lastCall = lastCall->previous; //wrap
     lua_settop(L, 0);
@@ -358,7 +358,7 @@ static int objlua_getMethodInit(lua_State *L) {
     return 2;
 }
 
-static int objlua_getFieldValue(lua_State *L) {
+LUA_API int objlua_getFieldValue(lua_State *L) {
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     const LuaObjField *field = lua_touserdata(L, 1);
     lua_pushnil(L);
@@ -368,16 +368,17 @@ static int objlua_getFieldValue(lua_State *L) {
     return 1;
 }
 
-static int objlua_setFieldValue(lua_State *L) {
+LUA_API int objlua_setFieldValue(lua_State *L) {
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     luaL_checkany(L, 2);
     const LuaObjField *field = lua_touserdata(L, 1);
     if (field->flags & LUAOBJ_ACCESS_ISFIELD) {
         setobj2n(L, &field->udata->uv[OBJLUA_UV_fields].uv, index2value(L, 2));
     }
+    return 0;
 }
 
-static int objlua_getMethodArgTypes(lua_State *L) {
+LUA_API int objlua_getMethodArgTypes(lua_State *L) {
     lua_settop(L, 1);
     luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
     const LuaObjMethod *method = lua_touserdata(L, 1);
