@@ -1,7 +1,16 @@
 # ObjLua - Lua面向对象
 > **基于Lua5.4.7的面向对象实现**
 
-### [在线体验](https://nwdxlgzs.github.io/objlua/objlua-web.html)
+<details>
+  <summary>安全更新</summary>
+
+        虽然objlua是基于5.4.7版本开发，但是基于安全修复需求，现已支持5.4.8相关更新与截止2025年7月5日可以查到的对5.4.8的修补补丁（https://lua.org/bugs.html），即objlua等效基于5.4.8（严格的说是半个5.4.9）开发，这也为为什么你看到的版本号实际不是5.4.7的原因。
+
+</details>
+
+
+
+### [在线体验](https://nwdxlgzs.github.io/objlua/objlua-web.html)（Web端不定期更新，未必是最新版本）
 
 # 面向对象语法
 

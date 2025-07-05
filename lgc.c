@@ -580,8 +580,12 @@ static lu_mem traversetable(global_State *g, Table *h) {
             traverseweakvalue(g, h);
         else if (!weakvalue) /* strong values? */
             traverseephemeron(g, h, 0);
-        else /* all weak */
-            linkgclist(h, g->allweak); /* nothing to traverse now */
+        else {  /* all weak */
+            if (g->gcstate == GCSpropagate)
+                linkgclist(h, g->grayagain);  /* must visit again its metatable */
+            else
+                linkgclist(h, g->allweak);  /* must clear collected entries */
+            }
     } else /* not weak */
         traversestrongtable(g, h);
     return 1 + h->alimit + 2 * allocsizenode(h);
