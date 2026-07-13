@@ -1,6 +1,8 @@
 # ObjLua - Lua面向对象
 > **基于Lua5.4.7的面向对象实现**
 
+> 如果你不接受更换解释器，这里有替代方案：[ObjLuaTrans](https://github.com/nwdxlgzs/ObjLuaTrans)
+
 <details>
   <summary>安全更新</summary>
 
